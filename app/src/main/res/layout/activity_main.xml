@@ -47,25 +47,32 @@
 
         <!--        section to hold new categories-->
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="categories"
-                android:textColor="@color/white" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:tabMode="scrollable"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorHeight="3dp"
+                app:tabTextColor="@color/white"
+                app:tabRippleColor="#95E2DEDE"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!--        our recycler view to show news -->
+    <!--        our view pager here to show recycler view with category news -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_news"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />

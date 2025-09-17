@@ -4,4 +4,6 @@
     <string name="newstitle">Canelo Alvarez vs. Terence Crawford fight: Results, winners, highlights, fight card, complete guide - CBS Sports</string>
     <string name="description">Crawford became an undisputed champion in a third weight class with his win over Alvarez on Saturday</string>
     <string name="published">publishedAt: 2025-09-14T07:00:00Z</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
