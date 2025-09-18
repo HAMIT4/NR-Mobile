@@ -15,4 +15,13 @@ public interface NewsApiService {
             @Query("category") String category,
             @Query("apiKey") String apiKey
     );
+
+    // search end point to search for everything
+    @GET("everything")
+    Call<NewsResponse> searchNews(
+            @Query("q") String query,
+            @Query("language") String language,
+            @Query("sortBy") String sortBy,
+            @Query("apiKey") String apiKey
+    );
 }

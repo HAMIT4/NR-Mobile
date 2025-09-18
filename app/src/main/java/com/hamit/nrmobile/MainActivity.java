@@ -2,6 +2,8 @@ package com.hamit.nrmobile;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,14 +30,17 @@ import com.hamit.nrmobile.Network.RetrofitClient;
 import com.hamit.nrmobile.data.model.NewsResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private RecyclerView searchRecyclerView;
     private CategoryPageAdapter pagerAdapter;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private NewsRecycler newsAdapter;
+    private SearchView searchView;
     private static final String API_KEY = "3bc2bc0f618346a58c09a18dc3b39216";
     // list our categories
     private final List<String> categories = Arrays.asList("general", "business", "technology", "sports", "entertainment", "health", "science");
@@ -54,11 +59,83 @@ public class MainActivity extends AppCompatActivity {
         // setup our tabview
         viewPager= findViewById(R.id.viewPager);
         tabLayout= findViewById(R.id.tabLayout);
-
+        searchView= findViewById(R.id.searchView);
 
         //testApiConnection();
         setupViewPager();
+        setupSearchView();
         fetchNewsByCategory("general");
+
+    }
+
+    private void setupSearchView() {
+        // set listener for search view
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()){
+                    // show tabs
+                    tabLayout.setVisibility(View.VISIBLE);
+                    viewPager.setVisibility(View.VISIBLE);
+
+                    int position= viewPager.getCurrentItem();
+                    fetchNewsByCategory(categories.get(position));
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!query.isEmpty()){
+                    searchNews(query);
+
+                    viewPager.setCurrentItem(0, true);
+                }
+                return true;
+            }
+        });
+
+        // handle search Close
+        searchView.setOnCloseListener(()->{
+            tabLayout.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.VISIBLE);
+            int position= viewPager.getCurrentItem();
+            fetchNewsByCategory(categories.get(position));
+
+            return false;
+        });
+    }
+
+    private void searchNews(String query) {
+        NewsApiService apiService= RetrofitClient.getService();
+        Call<NewsResponse> call= apiService.searchNews(query, "en", "publishedAt", API_KEY);
+
+        // check for response via enquiry
+        call.enqueue(new Callback<NewsResponse>() {
+            @Override
+            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                if (response.isSuccessful() && response.body() !=null){
+                    NewsResponse newsResponse= response.body();
+                    showSearchResults(newsResponse.getArticles(), query);
+                } else {
+                    Toast.makeText(MainActivity.this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
+                    Log.e("Search Error", "Error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Search failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Search Failure", t.getMessage());
+            }
+        });
+    }
+
+    private void showSearchResults(List<NewsResponse.Article> articles, String query) {
+        // special fragment  for search results
+        updateCurrentFragment(articles);
+
+        Toast.makeText(this, "Found " + articles.size() + " results for: " + query, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -111,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 
     // simple Api test

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,12 +15,15 @@ import com.hamit.nrmobile.R;
 import com.hamit.nrmobile.data.model.NewsResponse;
 import com.squareup.picasso.Picasso;
 
+
+
 import java.util.List;
 
 public class NewsRecycler extends RecyclerView.Adapter<NewsRecycler.MyViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<NewsResponse.Article> articles;
+    // backup for filter search query
 
     public NewsRecycler(Context context, List<NewsResponse.Article> articles) {
         this.context = context;
@@ -56,6 +60,10 @@ public class NewsRecycler extends RecyclerView.Adapter<NewsRecycler.MyViewHolder
     public int getItemCount() {
         return articles ==null? 0:articles.size();
     }
+
+    // override filter
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView newsImage;

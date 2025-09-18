@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.hamit.nrmobile.Adapters.NewsRecycler;
 import com.hamit.nrmobile.Network.NewsApiService;
@@ -33,9 +34,6 @@ public class GeneralFragment extends Fragment {
     private String category;
     private RecyclerView recyclerViewGeneral;
     private NewsRecycler newsAdapter;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
 
     public GeneralFragment() {
@@ -68,9 +66,8 @@ public class GeneralFragment extends Fragment {
         recyclerViewGeneral= contentView.findViewById(R.id.recyclerViewGeneral);
         recyclerViewGeneral.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // test using empty list before i fetch data from the api
+        // test using empty list before I fetch data from the api
         fetchNews(category);
-
 
         return contentView;
     }
@@ -95,8 +92,20 @@ public class GeneralFragment extends Fragment {
     }
 
     public void updateNews(List<NewsResponse.Article> articles){
-        newsAdapter = new NewsRecycler(getContext(), articles);
-        recyclerViewGeneral.setAdapter(newsAdapter);
+        // updating code to show search results
+        if (getView() != null){
+            if(recyclerViewGeneral != null){
+                newsAdapter = new NewsRecycler(getContext(), articles);
+                recyclerViewGeneral.setAdapter(newsAdapter);
+
+                // show empty state if no article is found
+                if (articles.isEmpty()){
+                    // try to create a text to show no article was found
+                    Toast.makeText(requireActivity(), "No search results Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
     }
     public String getCategory() {
         return category;
