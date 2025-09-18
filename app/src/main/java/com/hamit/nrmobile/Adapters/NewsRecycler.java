@@ -1,6 +1,7 @@
 package com.hamit.nrmobile.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hamit.nrmobile.NewsInfoActivity;
 import com.hamit.nrmobile.R;
 import com.hamit.nrmobile.data.model.NewsResponse;
 import com.squareup.picasso.Picasso;
@@ -23,7 +25,6 @@ public class NewsRecycler extends RecyclerView.Adapter<NewsRecycler.MyViewHolder
 
     private final Context context;
     private List<NewsResponse.Article> articles;
-    // backup for filter search query
 
     public NewsRecycler(Context context, List<NewsResponse.Article> articles) {
         this.context = context;
@@ -33,9 +34,8 @@ public class NewsRecycler extends RecyclerView.Adapter<NewsRecycler.MyViewHolder
     @NonNull
     @Override
     public NewsRecycler.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        MyViewHolder holder= new MyViewHolder(LayoutInflater.from(context)
+        return new MyViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.news_item,parent,false));
-        return holder;
     }
 
     @Override
@@ -54,15 +54,19 @@ public class NewsRecycler extends RecyclerView.Adapter<NewsRecycler.MyViewHolder
                 .fit()
                 .centerCrop()
                 .into(holder.newsImage);
+
+        // set listener for each item
+        holder.itemView.setOnClickListener(v->{
+            Intent intent = new Intent(context, NewsInfoActivity.class);
+            intent.putExtra("url", article.getUrl());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
         return articles ==null? 0:articles.size();
     }
-
-    // override filter
-
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
